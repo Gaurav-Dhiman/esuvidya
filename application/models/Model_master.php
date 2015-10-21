@@ -4,7 +4,7 @@
  * Login Model 
  *
  * @author Gaurav Dhiman.
- * @package Rnd
+ * @package esuvidya
  *
  */
 class Model_master extends CI_Model {
@@ -71,7 +71,7 @@ class Model_master extends CI_Model {
 	 *
 	 */
 	public function ajax_section_list(){
-		$this->datatables->set_database('rnd');
+		$this->datatables->set_database('esuvidya');
 		$show_table = 'sections';
 			
 		$this->datatables->select("$show_table.code as code,$show_table.name as name,$show_table.start_std as start_std,$show_table.end_std as end_std,$show_table.header_name as header_name,$show_table.only_fr_acc as only_fr_acc,$show_table.sec_id as sec_id", TRUE);
@@ -103,7 +103,7 @@ class Model_master extends CI_Model {
 	 *
 	 */
 	public function ajax_standard_list(){
-		$this->datatables->set_database('rnd');
+		$this->datatables->set_database('esuvidya');
 		$show_table = 'standards';
 			
 		$this->datatables->select("$show_table.std_code as std_code,$show_table.std as std,$show_table.section as section,$show_table.medium as medium,$show_table.best_age as best_age,$show_table.next_std as next_std,$show_table.default_fee_schemes as default_fee_schemes,$show_table.std_name as std_name,$show_table.fractional_marks as fractional_marks,$show_table.std_id as std_id", TRUE);
@@ -186,7 +186,7 @@ class Model_master extends CI_Model {
 	 *
 	 */
 	public function ajax_division_list(){
-		$this->datatables->set_database('rnd');
+		$this->datatables->set_database('esuvidya');
 		$show_table = 'divisions';
 			
 		$this->datatables->select("$show_table.std_code as std_code,$show_table.division_name as division_name,$show_table.div_id as div_id", TRUE);

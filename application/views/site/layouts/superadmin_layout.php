@@ -168,8 +168,8 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 						<li ><a href="<?php echo base_url('student/add.htm'); ?>">Add Student</a></li>
 						<li ><a href="<?php echo base_url('student/listing.htm'); ?>">Student Listing</a></li>
 						<li ><a href="<?php echo base_url(''); ?>">Student Details</a></li>
-						<li ><a href="<?php echo base_url(''); ?>">Bulk Modification</a></li>
-						<li ><a href="<?php echo base_url(''); ?>">Select and Print</a></li>
+						<li ><a href="<?php echo base_url('student/bulk_modification'); ?>">Bulk Modification</a></li>
+						<li ><a href="<?php echo base_url('student/select_print'); ?>">Select and Print</a></li>
 						<li ><a href="<?php echo base_url('student/strength.htm'); ?>">Student strength</a></li>
 						<li ><a href="<?php echo base_url('student/select_student'); ?>">Bonafide Certificate</a></li>
 						<li ><a href="<?php echo base_url('student/leaving_certificate'); ?>">Leaving Certificate</a></li>

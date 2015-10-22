@@ -4,7 +4,7 @@
  * User Model 
  *
  * @author Gaurav Dhiman.
- * @package esuvidya
+ * @package Rnd
  *
  */
 class Model_user extends CI_Model {
@@ -70,7 +70,7 @@ class Model_user extends CI_Model {
 	 *
 	 */
 	public function ajax_user_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'user';
 			
 		$this->datatables->select("$show_table.fullname as fullname,$show_table.username as username,$show_table.email as email,$show_table.gender as gender,$show_table.user_type as user_type,$show_table.user_id as user_id", TRUE);

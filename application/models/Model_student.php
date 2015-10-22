@@ -4,7 +4,7 @@
  * User Model
  *
  * @author Gaurav Dhiman.
- * @package esuvidya
+ * @package Rnd
  *
  */
 class Model_student extends CI_Model {
@@ -55,7 +55,7 @@ class Model_student extends CI_Model {
 	 */
 	function get_student($stud_id = null){
 		if($stud_id){
-			$sql = "SELECT * FROM student WHERE stud_id = $stud_id LIMIT 1";
+			$sql = "SELECT * FROM student WHERE stud_id = $stud_id AND is_deleted=0 LIMIT 1";
 			$query = $this->db->query($sql);
 			$data = $query->result_array();
 
@@ -67,12 +67,12 @@ class Model_student extends CI_Model {
 	}
 
 	/**
-	 * Get User
+	 * Get User by standard
 	 */
-	function get_student_by_standard($std_id = null, $fields){
+	function get_student_by_standard($std_id = null, $fields, $orderBy){
 		if($std_id){
 			$fields = implode(',', $fields);
-			$sql = "SELECT $fields FROM student WHERE std = $std_id";
+			$sql = "SELECT $fields FROM student WHERE std = $std_id AND is_deleted=0 ORDER BY fname $orderBy";
 			$query = $this->db->query($sql);
 			$data = $query->result_array();
 			if(!empty($data))
@@ -82,7 +82,80 @@ class Model_student extends CI_Model {
 		}
 	}
 
-/**
+	/**
+	 * Get User by standard
+	 * @param null $stream_id
+	 * @param $fields
+	 * @return bool
+	 */
+	function get_student_by_stream($stream_id = null, $fields){
+		if($stream_id){
+			$fields = implode(',', $fields);
+			$sql = "SELECT $fields FROM student WHERE stream = $stream_id AND is_deleted=0";
+			$query = $this->db->query($sql);
+			$data = $query->result_array();
+			if(!empty($data))
+				return $data;
+			else
+				return false;
+		}
+	}
+
+	/**
+	 * Get User by standard
+	 */
+	function get_student_by_division($div_id = null, $fields){
+		if($div_id){
+			$fields = implode(',', $fields);
+			$sql = "SELECT $fields FROM student WHERE division = $div_id AND is_deleted=0";
+			$query = $this->db->query($sql);
+			$data = $query->result_array();
+			if(!empty($data))
+				return $data;
+			else
+				return false;
+		}
+	}
+
+    /**
+     * Get students list
+     */
+    function list_students($fields = null){
+        if($fields){
+            $fields = implode(',', $fields);
+            $sql = "SELECT $fields FROM student WHERE is_deleted=0";
+
+        }
+        else{
+            $sql = "SELECT * FROM student WHERE is_deleted=0";
+        }
+        $query = $this->db->query($sql);
+        $data = $query->result_array();
+        if(!empty($data))
+            return $data;
+        else
+            return false;
+    }
+
+    /**
+	 * Get students list by given condition
+	 */
+	function list_students_field($cond){
+        $this->db->select();
+        $this->db->from('student');
+        if($cond != null)
+            $this->db->where($cond);
+
+        $this->db->where('is_deleted','0');
+        $query = $this->db->get();
+        $data = $query->result_array();
+		if(!empty($data))
+			return $data;
+		else
+			return false;
+	}
+
+	/**
 	 * Get User
 	 */
 	function update_student_batch($data, $prime_key){
@@ -101,7 +174,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 
 		$this->datatables->select("$show_table.gr_num as gr_num,$show_table.std as std,$show_table.division as division,$show_table.roll_num as roll_num,$show_table.fname as fname,$show_table.lname as lname,$show_table.gender as gender,$show_table.status as status,$show_table.stud_id as stud_id", TRUE);
@@ -121,7 +194,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_new_student_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -152,7 +225,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_left_student_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -180,7 +253,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_by_caste_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -207,7 +280,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_by_age_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -240,7 +313,7 @@ class Model_student extends CI_Model {
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
 
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 
 		$this->datatables->select("$show_table.gr_num as gr_num,$show_table.std as std,$show_table.division as division,$show_table.roll_num as roll_num,$show_table.fname as fname,$show_table.lname as lname,$show_table.gender as gender,$show_table.status as status,$show_table.birth_date as birth_date,$show_table.stud_id as stud_id", TRUE);
@@ -267,7 +340,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_by_class_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -297,7 +370,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_left_list(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 		$start_date = $this->session->userdata('start_date');
 		$end_date  	= $this->session->userdata('end_date');
@@ -328,7 +401,7 @@ class Model_student extends CI_Model {
 	 *
 	 */
 	public function ajax_student_list_bonafide(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 
 
@@ -392,7 +465,7 @@ class Model_student extends CI_Model {
 	}
 
 	public function ajax_students_strength(){
-		$this->datatables->set_database('esuvidya');
+		$this->datatables->set_database('rnd');
 		$show_table = 'student';
 
 		$this->datatables->select("$show_table.`std` as std , $show_table.`stream` as section , COUNT($show_table.`stud_id` ) AS strength", TRUE);
@@ -407,10 +480,50 @@ class Model_student extends CI_Model {
 		$i = 1;
 		foreach($data as $field)
 		{
+			$data1[] = $field['Field'];
 			$result[$i]['col_name'] = $field['Field'];
+			$result[$i]['col_type'] = $field['Type'];
 			$result[$i]['col_null'] = $field['Null'];
 			$i++;
 		}
 		return $result;
-  }
+  	}
+
+	/** ajax Datatable student list
+	 *
+	 */
+	public function ajax_student_list_select_print(){
+		$this->datatables->set_database('rnd');
+		$show_table = 'student';
+
+		$this->datatables->select("$show_table.gr_num as gr_num,$show_table.std as std,$show_table.division as division,$show_table.roll_num as roll_num,$show_table.fname as fname,$show_table.lname as lname,$show_table.gender as gender,$show_table.status as status,$show_table.stud_id as stud_id", TRUE);
+		$this->datatables->from($show_table);
+		$this->datatables->where('is_deleted','0');
+
+		//$view = "<a id='edit' style='float:left;width:10px;margin-right: 80px;' href=" . base_url('student/view/$1') . " title='View'><i class='icon-edit'></i></a>";
+		$edit = "<a id='edit' style='float:left;width:40px' href=" . base_url('student/edit/$1') . " title='Edit'><i class='icon-edit'></i></a>";
+		$delete = "<a style='float:right;width:10px' href=" . base_url('student/delete/$1') . " onclick='$.deleteLink=\"" . base_url('student/delete/$1') . "\";$.OnDeleteDialog()'  title='Delete'><i class='icon-trash'></i></a></div>";
+		$this->datatables->edit_column('stud_id',$edit.$delete,'stud_id');
+
+		return $this->datatables->generate();
+
+	}
+
+    public function excel_students_details($ids){
+        $idList = $ids;
+        $queryexport = "SELECT * FROM student WHERE stud_id in (".$idList.") ";
+
+        $query = $this->db->query($queryexport);
+
+
+        $result = $query->result_array();
+        if($result)
+            return $result;
+        else
+            return false;
+    }
+
+    function writeRow($val) {
+        echo '<td>'.$val.'</td>';
+    }
 }

@@ -7,7 +7,6 @@ class Login extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
-		
 		$this->load->model('model_login');
 
 	}
@@ -19,13 +18,12 @@ class Login extends CI_Controller {
 	public function index()
 	{
 
-		//pre_print($_POST);
+		//	pre_print($_POST);
 
 		if(isset($_POST['submit']) && !empty($_POST)):
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 			$userResult = $this->model_login->check_login($username,$password);
-
 			if(count($userResult) > 0 && $userResult != false)
 			{
 				if(ISSET($_POST['remember']))
@@ -54,9 +52,9 @@ class Login extends CI_Controller {
 				}
 				setcookie("user_id", $userResult['user_id'],$expire,'/');
 				$this->session->set_userdata($newdata);
-pre_print($this->session->userdata('user_type'));
+
 				switch($this->session->userdata('user_type')):
-					case 'Superadmin':
+					case 'superadmin':
 						redirect('superadmin');
 						break;
 					case 'Admin':

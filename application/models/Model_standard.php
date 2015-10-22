@@ -23,6 +23,17 @@ class Model_standard extends CI_Model
         $this->load->database();
     }
 
+    function getSections(){
+        $sql = "SELECT sec_id,code,name,start_std,end_std FROM sections";
+        $query = $this->db->query($sql);
+        $data = $query->result_array();
+
+        if(!empty($data))
+            return $data;
+        else
+            return false;
+    }
+
     function getStandards(){
         $sql = "SELECT std_id,std_name FROM standards";
         $query = $this->db->query($sql);
@@ -55,6 +66,16 @@ class Model_standard extends CI_Model
             $this->db->where($cond);
 
         $query = $this->db->get();
+        $data = $query->result_array();
+        if(!empty($data))
+            return $data;
+        else
+            return false;
+    }
+
+    function getStandardsBySections($sec){
+        $sql = "SELECT std_id,std_name FROM standards WHERE section='$sec'";
+        $query = $this->db->query($sql);
         $data = $query->result_array();
 
         if(!empty($data))

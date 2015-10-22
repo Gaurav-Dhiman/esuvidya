@@ -334,9 +334,7 @@ class Student extends CI_Controller {
 	 * @method Datatable function for student by Birthday listing
 	 */
 	function ajax_datatable_student_by_birthday_list(){
-
 		echo $this->model_student->ajax_student_by_birthday_list();
-
 	}
 
 
@@ -481,8 +479,11 @@ class Student extends CI_Controller {
 	{
 		$data['not_show_field'] = array('is_deleted', 'updated_by', 'modified', 'created', 'leaving_date');
 		$this->load->model('model_standard');
-		$data['standards'] = $this->model_standard->getStandards();
+        $data['sections'] = $this->model_standard->getSections();
+        $data['standards'] = $this->model_standard->getStandards();
 		$data['columns'] = $this->model_student->get_columns();
+		$data['streams'] = $this->model_standard->getStreams();
+		$data['divisions'] = $this->model_standard->getDivisions();
 		superadmin_view('student/bulk_modification',$data);
 	}
 
@@ -490,9 +491,21 @@ class Student extends CI_Controller {
 	{
 		$data = $_POST;
 		$columns = array_keys($data['field']);
-		$data['students'] = $this->model_student->get_student_by_standard($_POST['standard'],$columns);
-		// pre_print($data);
-		superadmin_view('student/bulk_modification2',$data);
+        $this->load->model('model_standard');
+        $data['standards'] = $this->model_standard->getStandards();
+        $data['columns'] = $this->model_student->get_columns();
+        $data['streams'] = $this->model_standard->getStreams();
+        $data['divisions'] = $this->model_standard->getDivisions();
+//		$fields = $this->model_student->get_columns();
+        if(isset($_POST['selectby']) && $_POST['selectby'] == 'standard')
+		    $data['students'] = $this->model_student->get_student_by_standard($_POST['standard'],$columns);
+        if(isset($_POST['selectby']) && $_POST['selectby'] == 'sections')
+            $data['students'] = $this->model_student->get_student_by_standard($_POST['standard'],$columns,$data['orderby']);
+        /*if(isset($_POST['selectby']) && $_POST['selectby'] == 'division')
+            $data['students'] = $this->model_student->get_student_by_division($_POST['division'],$columns);*/
+//        echo "<pre>";print_r($data);exit;
+//        echo empty($data['students']);exit;
+        superadmin_view('student/bulk_modification3',$data);
 	}
 
 	public function save_bulk_students()
@@ -506,4 +519,85 @@ class Student extends CI_Controller {
 			$this->session->set_flashdata('error', 'Records not updated.');
 			redirect('student/bulk_modification');
 	}
+
+    public function select_print() {
+        $students = $this->model_student->list_students();
+        $data['students'] = $students;
+        $this->load->model('model_standard');
+        $data['sections'] = $this->model_standard->getSections();
+        $data['standards'] = $this->model_standard->getStandards();
+        $data['streams'] = $this->model_standard->getStreams();
+        $data['divisions'] = $this->model_standard->getDivisions();
+//        pre_print($students);exit;
+        superadmin_view('student/select_print',$data);
+    }
+
+	public function get_students_by_field(){
+		$postData[$this->input->post('col')] = $this->input->post('value');
+		$result['students'] = $this->model_student->list_students_field($postData);
+        if($result['students'] != false)
+            $this->load->view('site/middle/student/student_select_print_listing',$result);
+        else{
+            echo '<div class="row-fluid"> <div class="span12"> <div class="span3">';
+            echo "No record in table.";
+            echo "</div></div></div>";
+        }
+//        echo $this->load->superadmin('site/middle/student/student_select_print_listing',$result);
+	}
+
+    public function get_standards_by_section(){
+        $sec = $this->input->post('section');
+        $std = $this->input->post('std');
+        $this->load->model('model_standard');
+        $standards = $this->model_standard->getStandardsBySections($sec);
+            if($standards != false) {
+            $optionsAsString = "<option value=''>Select Standard</option>";
+            foreach($standards as $standard) {
+                $optionsAsString .= "<option value='" . $standard['std_id'] . "'>" . $standard['std_name'] . "</option>";
+            }
+            echo $optionsAsString;
+            exit;
+        }
+        else{
+            echo "No Standard found";
+        }
+    }
+
+    public function getStudentsExcel(){
+        $this->load->library('ExportXLS','','xls');
+        $filename = 'Students_details'. date('YmdHis');
+        $ids = $this->input->get('ids');
+        $result = $this->model_student->excel_students_details($ids);
+        header('Content-Disposition: attachment; filename='.$filename.'.xls');
+        header('Content-type: application/force-download');
+        header('Content-Transfer-Encoding: binary');
+        header('Pragma: public');
+//        print "\xEF\xBB\xBF"; // UTF-8 BOM
+        $h = array();
+        foreach($result as $row){
+            foreach($row as $key=>$val){
+                if(!in_array($key, $h)){
+                    $h[] = $key;
+                }
+            }
+        }
+        echo '<table><tr>';
+        foreach($h as $key) {
+            $key = ucwords($key);
+            echo '<th>'.$key.'</th>';
+        }
+        echo '</tr>';
+
+        foreach($result as $row){
+            echo '<tr>';
+            foreach($row as $val)
+                $this->writeRow($val);
+        }
+        echo '</tr>';
+        echo '</table>';
+    }
+
+    function writeRow($val) {
+        echo '<td>'.$val.'</td>';
+    }
 }

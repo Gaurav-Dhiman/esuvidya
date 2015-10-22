@@ -59,14 +59,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'esuvidya';
+$active_group = 'rnd';
 $query_builder = TRUE;
 
-$db['esuvidya'] = array(
+$db['rnd'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => '',
+	'password' => 'root',
 	'database' => 'esuvidya',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
